@@ -7,7 +7,7 @@ export function SiteHeader({ userName }: { userName: string | null }) {
     <header className="sticky top-0 z-20 border-b border-surface-container-high bg-white/95 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-[1280px] items-center justify-between px-4 sm:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/Dolas-logo.png" alt="" width={32} height={32} className="size-8" priority />
+          <Image src="/dolas-logo.png" alt="" width={32} height={32} className="size-8" priority />
           <span className="text-lg font-bold leading-6 tracking-[-0.45px] text-primary">Dolas Finance</span>
         </Link>
         {userName ? (

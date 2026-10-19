@@ -15,7 +15,7 @@ const links = [
 function Brand() {
   return (
     <Link href="/" className="flex items-center gap-2 px-1 pt-1">
-      <Image src="/Dolas-logo.png" alt="" width={32} height={32} className="size-8" />
+      <Image src="/dolas-logo.png" alt="" width={32} height={32} className="size-8" />
       <span className="text-lg leading-6 tracking-[-0.45px]">
         <span className="font-bold text-primary">Dolas</span>{" "}
         <span className="font-normal tracking-[-0.18px] text-on-surface-variant">Finance</span>
