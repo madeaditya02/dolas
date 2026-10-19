@@ -1,4 +1,5 @@
 // src/services/dashboard.service.ts
+import type { Transaction } from "../../prisma/generated/prisma/client.js";
 import { prisma } from "../utils/db.js";
 
 // Helper untuk menghitung persentase perubahan
@@ -68,20 +69,20 @@ export const getDashboardSummary = async (userId: string, month?: string) => {
 
   // 2. KALKULASI OVERVIEW (Bulan Ini vs Bulan Lalu)
   let incomeThisMonth = 0, expenseThisMonth = 0;
-  currentMonthTx.forEach(t => {
+  currentMonthTx.forEach((t: Transaction) => {
     if (t.type === 'INCOME') incomeThisMonth += t.amount;
     if (t.type === 'EXPENSE') expenseThisMonth += t.amount;
   });
 
   let incomeLastMonth = 0, expenseLastMonth = 0;
-  lastMonthTx.forEach(t => {
+  lastMonthTx.forEach((t: Transaction) => {
     if (t.type === 'INCOME') incomeLastMonth += t.amount;
     if (t.type === 'EXPENSE') expenseLastMonth += t.amount;
   });
 
   // 2.1 Income dan expense bulan sekarang (bukan filter)
   let incomeCurrentMonth = 0, expenseCurrentMonth = 0;
-  thisMonthTx.forEach(t => {
+  thisMonthTx.forEach((t: Transaction) => {
     if (t.type === 'INCOME') incomeCurrentMonth += t.amount;
     if (t.type === 'EXPENSE') expenseCurrentMonth += t.amount;
   });
@@ -110,11 +111,11 @@ export const getDashboardSummary = async (userId: string, month?: string) => {
 
   // 4. KALKULASI SPENDING HOTSPOTS (Kategori Pengeluaran Bulan Ini)
   const categoryMap: Record<string, number> = {};
-  currentMonthTx.filter(t => t.type === 'EXPENSE').forEach(t => {
+  currentMonthTx.filter((t: Transaction) => t.type === 'EXPENSE').forEach((t: Transaction) => {
     categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
   });
 
-  const hotspotsCategories = Object.keys(categoryMap).map(category => ({
+  const hotspotsCategories = Object.keys(categoryMap).map((category: string) => ({
     category,
     amount: categoryMap[category],
     percentage: expenseThisMonth > 0
@@ -135,7 +136,7 @@ export const getDashboardSummary = async (userId: string, month?: string) => {
   let totalOutflow4Weeks = 0;
 
   // last4WeeksTx.forEach(t => {
-  currentMonthTx.forEach(t => {
+  currentMonthTx.forEach((t: Transaction) => {
     // Menentukan transaksi masuk ke minggu ke berapa (0-3)
     // const diffTime = Math.abs(now.getTime() - t.date.getTime());
     // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

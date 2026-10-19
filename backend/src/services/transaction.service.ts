@@ -122,11 +122,11 @@ export const getTransactions = async (params: GetTransactionsParams) => {
     });
 
     totalItems = count;
-    aggregations = groups.map((group) => ({
+    aggregations = groups.map((group: { type: string; _sum: { amount: number | null } }) => ({
       type: group.type,
       _sum: { amount: group._sum.amount },
     }));
-    categoryOptions = categoryRows.map((row) => row.category);
+    categoryOptions = categoryRows.map((row: { category: string }) => row.category);
     summaryCache.set(cacheKey, {
       totalItems,
       aggregations,
@@ -139,7 +139,7 @@ export const getTransactions = async (params: GetTransactionsParams) => {
   let filteredIncome = 0;
   let filteredExpense = 0;
 
-  aggregations.forEach(agg => {
+  aggregations.forEach((agg: { type: string; _sum: { amount: number | null } }) => {
     if (agg.type === "INCOME") filteredIncome = agg._sum.amount || 0;
     if (agg.type === "EXPENSE") filteredExpense = agg._sum.amount || 0;
   });
@@ -163,7 +163,7 @@ export const getTransactions = async (params: GetTransactionsParams) => {
 
 export const saveExtractedTransactions = async (userId: string, transactions: ParsedTransaction[]) => {
   let netBalanceChange = 0;
-  const dataToInsert = transactions.map((t) => {
+  const dataToInsert = transactions.map((t: ParsedTransaction) => {
     if (t.type.toUpperCase() === "INCOME") netBalanceChange += t.amount;
     if (t.type.toUpperCase() === "EXPENSE") netBalanceChange -= t.amount;
     return {
@@ -175,7 +175,7 @@ export const saveExtractedTransactions = async (userId: string, transactions: Pa
     }
   });
 
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const createdTransactions = await tx.transaction.createMany({
       data: dataToInsert,
     });
@@ -209,7 +209,7 @@ export const getOneTransaction = async (transactionId: string) => {
 export const updateTransaction = async (transactionId: string, data: TransactionEditPayload) => {
   // update balance
   const oldTransaction = await prisma.transaction.findUnique({ where: { id: transactionId } });
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const updatedTransaction = await tx.transaction.update({
       where: { id: transactionId },
       data: data as Prisma.TransactionUpdateInput
@@ -236,7 +236,7 @@ export const updateTransaction = async (transactionId: string, data: Transaction
 
 export const deleteTransaction = async (transactionId: string) => {
   // update balance
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const deletedTransaction = await tx.transaction.delete({ where: { id: transactionId } });
     // const transaction = await tx.transaction.findUnique({ where: { id: transactionId } });
     const difference = deletedTransaction?.amount || 0;

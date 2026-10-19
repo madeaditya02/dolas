@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/app.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/app.js",
     "db:migrate": "npx prisma migrate reset --force && npx prisma migrate dev --name finance_migration && npx prisma db seed && npx prisma generate"
   },
