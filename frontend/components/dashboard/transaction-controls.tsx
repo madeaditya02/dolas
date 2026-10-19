@@ -20,7 +20,7 @@ function writeQuery(current: TransactionQuery, patch: Partial<Record<keyof Trans
   const next = new URLSearchParams();
   const merged: TransactionQuery = { ...current, ...Object.fromEntries(Object.entries(patch).filter(([, value]) => value)) };
   for (const [key, value] of Object.entries(patch)) {
-    if (value === null) delete merged[key as keyof TransactionQuery];
+    if (value === null || value === '') delete merged[key as keyof TransactionQuery];
   }
   for (const [key, value] of Object.entries(merged)) {
     if (value) next.set(key, value);
