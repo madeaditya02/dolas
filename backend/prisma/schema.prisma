@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER // Disiapkan untuk fitur Pindah Dompet nanti
+}
+
+model User {
+  id                String    @id @default(uuid())
+  name              String
+  email             String    @unique
+  password          String
+  email_verified_at DateTime?
+  currency          String?
+  balance           Int?
+  dailyLimit        Int?
+
+  transactions      Transaction[]
+
+  timezone          String    @default("Asia/Makassar")
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Transaction {
+  id          String          @id @default(uuid())
+  userId      String
+  type        TransactionType
+  amount      Int             // Menggunakan Int (Integer) sangat cocok untuk Rupiah (IDR)
+  category    String
+  description String
+  date        DateTime        @default(now()) // Bisa di-override jika user mencatat transaksi kemarin
+  
+  // Kolom "Senjata Rahasia" untuk skalabilitas masa depan
+  // Akan menampung data dinamis seperti: raw text OCR, tags proyek, atau info split-bill
+  metadata    Json?           
+
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, type, date])
+  
+  @@map("transactions") // Opsional: membuat nama tabel di PostgreSQL menjadi huruf kecil (best practice)
+  
+}
