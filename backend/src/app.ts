@@ -13,6 +13,11 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/auth", authRoutes);
 
+// add route '/'
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello World");
+});
+
 const PORT = process.env.PORT || 8000;
 
 if (process.env.NODE_ENV !== 'production') {
